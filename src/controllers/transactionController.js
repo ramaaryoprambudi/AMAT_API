@@ -1,13 +1,13 @@
-const Transaction = require('../models/Transaction');
-const { validationResult } = require('express-validator');
-const moment = require('moment');
+import Transaction from '../models/Transaction.js';
+import { validationResult } from 'express-validator';
+import moment from 'moment';
 
 class TransactionController {
   // Get dashboard data (Balance, Cash In/Out, Recent Activity, User Name)
   static async getDashboard(req, res) {
     try {
       const userId = req.user.id;
-      const User = require('../models/User');
+      const { default: User } = await import('../models/User.js');
       
       // Get user information
       const userInfo = await User.getById(userId);
@@ -669,4 +669,4 @@ class TransactionController {
   }
 }
 
-module.exports = TransactionController;
+export default TransactionController;

@@ -1,9 +1,8 @@
-const express = require('express');
-const router = express.Router();
+import express from 'express';
+import authRoutes from './auth.js';
+import transactionRoutes from './transactions.js';
 
-// Import route modules
-const authRoutes = require('./auth');
-const transactionRoutes = require('./transactions');
+const router = express.Router();
 
 // Health check endpoint
 router.get('/health', (req, res) => {
@@ -40,4 +39,4 @@ router.get('/', (req, res) => {
 router.use('/auth', authRoutes);
 router.use('/transactions', transactionRoutes);
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 // Konfigurasi storage untuk multer
 const storage = multer.diskStorage({
@@ -157,7 +157,7 @@ const validateImageDimensions = (req, res, next) => {
   next();
 };
 
-module.exports = {
+export {
   uploadProfilePhoto,
   optionalUploadProfilePhoto,
   deleteOldProfilePhoto,

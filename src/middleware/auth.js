@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 // Middleware to verify JWT token
 const authenticateToken = async (req, res, next) => {
@@ -127,7 +127,7 @@ const checkResourceOwnership = (resourceType) => {
           });
       }
 
-      const db = require('../config/db');
+        const { default: db } = await import('../config/db.js');
       const resource = await db.getOne(query, [resourceId]);
 
       if (!resource) {
@@ -215,7 +215,7 @@ const rateLimiter = (maxRequests = 100, windowMs = 15 * 60 * 1000) => {
   };
 };
 
-module.exports = {
+export {
   authenticateToken,
   optionalAuth,
   checkResourceOwnership,

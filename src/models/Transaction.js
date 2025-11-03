@@ -1,5 +1,5 @@
-const db = require('../config/db');
-const moment = require('moment');
+import db from '../config/db.js';
+import moment from 'moment';
 
 class Transaction {
   // Get all transactions with pagination and filters
@@ -429,4 +429,4 @@ class Transaction {
   }
 }
 
-module.exports = Transaction;
+export default Transaction;
