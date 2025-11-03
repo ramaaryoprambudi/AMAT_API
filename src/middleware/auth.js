@@ -21,6 +21,16 @@ const authenticateToken = async (req, res, next) => {
       process.env.JWT_SECRET || 'fallback_secret_key_change_in_production'
     );
 
+    // Debug: Log token info in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('Token debug:', {
+        issued: new Date(decoded.iat * 1000),
+        expires: new Date(decoded.exp * 1000),
+        now: new Date(),
+        timeLeft: Math.floor((decoded.exp * 1000 - Date.now()) / 1000 / 60) + ' minutes'
+      });
+    }
+
     // Check if user still exists and is active
     const user = await User.getById(decoded.user.id);
     
@@ -46,7 +56,13 @@ const authenticateToken = async (req, res, next) => {
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,
-        message: 'Token has expired'
+        message: 'Token has expired',
+        expiredAt: error.expiredAt,
+        currentTime: new Date().toISOString(),
+        debug: process.env.NODE_ENV !== 'production' ? {
+          serverTime: new Date().toISOString(),
+          tokenExpiry: error.expiredAt
+        } : undefined
       });
     }
     

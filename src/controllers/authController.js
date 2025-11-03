@@ -46,11 +46,16 @@ class AuthController {
         }
       };
 
+      const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
       const token = jwt.sign(
         payload,
         process.env.JWT_SECRET || 'fallback_secret_key_change_in_production',
-        { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+        { expiresIn }
       );
+
+      // Calculate expiry time
+      const now = new Date();
+      const expiryTime = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days default
 
       res.status(201).json({
         success: true,
@@ -58,7 +63,9 @@ class AuthController {
         data: {
           user: newUser,
           token,
-          expires_in: process.env.JWT_EXPIRES_IN || '7d'
+          expires_in: expiresIn,
+          issued_at: now.toISOString(),
+          expires_at: expiryTime.toISOString()
         }
       });
     } catch (error) {
@@ -118,11 +125,16 @@ class AuthController {
         }
       };
 
+      const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
       const token = jwt.sign(
         payload,
         process.env.JWT_SECRET || 'fallback_secret_key_change_in_production',
-        { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+        { expiresIn }
       );
+
+      // Calculate expiry time
+      const now = new Date();
+      const expiryTime = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days default
 
       res.json({
         success: true,
@@ -130,7 +142,10 @@ class AuthController {
         data: {
           user,
           token,
-          expires_in: process.env.JWT_EXPIRES_IN || '7d'
+          expires_in: expiresIn,
+          issued_at: now.toISOString(),
+          expires_at: expiryTime.toISOString(),
+          server_time: now.toISOString()
         }
       });
     } catch (error) {
@@ -381,12 +396,21 @@ class AuthController {
         });
       }
 
+      const now = new Date();
+      const expiry = new Date(req.user.exp * 1000);
+      const timeLeft = Math.floor((expiry.getTime() - now.getTime()) / 1000 / 60);
+
       res.json({
         success: true,
         message: 'Token is valid',
         data: {
           user,
-          token_expires: new Date(req.user.exp * 1000)
+          token_info: {
+            expires_at: expiry.toISOString(),
+            server_time: now.toISOString(),
+            time_left_minutes: timeLeft,
+            is_expired: now > expiry
+          }
         }
       });
     } catch (error) {
@@ -394,6 +418,61 @@ class AuthController {
       res.status(500).json({
         success: false,
         message: 'Failed to verify token',
+        error: error.message
+      });
+    }
+  }
+
+  // Refresh token endpoint
+  static async refreshToken(req, res) {
+    try {
+      // Token sudah diverifikasi oleh middleware, ambil user info
+      const user = await User.getById(req.user.id);
+      
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: 'User not found'
+        });
+      }
+
+      // Generate new token
+      const payload = {
+        user: {
+          id: user.id,
+          uid: user.uid,
+          email: user.email
+        }
+      };
+
+      const expiresIn = process.env.JWT_EXPIRES_IN || '7d';
+      const newToken = jwt.sign(
+        payload,
+        process.env.JWT_SECRET || 'fallback_secret_key_change_in_production',
+        { expiresIn }
+      );
+
+      // Calculate expiry time
+      const now = new Date();
+      const expiryTime = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000)); // 7 days default
+
+      res.json({
+        success: true,
+        message: 'Token refreshed successfully',
+        data: {
+          user,
+          token: newToken,
+          expires_in: expiresIn,
+          issued_at: now.toISOString(),
+          expires_at: expiryTime.toISOString(),
+          server_time: now.toISOString()
+        }
+      });
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Failed to refresh token',
         error: error.message
       });
     }

@@ -69,4 +69,10 @@ router.get('/verify',
   asyncHandler(AuthController.verifyToken)
 );
 
+// POST /api/auth/refresh - Refresh token
+router.post('/refresh',
+  authenticateToken,
+  asyncHandler(AuthController.refreshToken)
+);
+
 export default router;
