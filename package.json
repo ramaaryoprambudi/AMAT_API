@@ -2,6 +2,7 @@
   "name": "personal-finance-api",
   "version": "1.0.0",
   "description": "API Backend untuk Aplikasi Manajemen Keuangan Pribadi",
+  "type": "module",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",

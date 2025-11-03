@@ -1,5 +1,5 @@
-const mysql = require('mysql2');
-const dbConfig = require('./database');
+import mysql from 'mysql2';
+import dbConfig from './database.js';
 
 // Create connection pool
 const pool = mysql.createPool(dbConfig);
@@ -88,7 +88,19 @@ const remove = async (query, params = []) => {
   }
 };
 
-module.exports = {
+export {
+  pool,
+  promisePool,
+  testConnection,
+  executeQuery,
+  getOne,
+  getMany,
+  insert,
+  update,
+  remove
+};
+
+export default {
   pool,
   promisePool,
   testConnection,

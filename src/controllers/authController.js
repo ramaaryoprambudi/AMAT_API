@@ -1,7 +1,7 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
-const { validationResult } = require('express-validator');
-const { deleteOldProfilePhoto } = require('../middleware/upload');
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
+import { validationResult } from 'express-validator';
+import { deleteOldProfilePhoto } from '../middleware/upload.js';
 
 class AuthController {
   // Register new user
@@ -400,4 +400,4 @@ class AuthController {
   }
 }
 
-module.exports = AuthController;
+export default AuthController;

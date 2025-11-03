@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
+import AuthController from '../controllers/authController.js';
+import { authenticateToken, rateLimiter } from '../middleware/auth.js';
+import { authValidation } from '../middleware/validation.js';
+import { asyncHandler } from '../middleware/errorHandler.js';
+import { uploadProfilePhoto, optionalUploadProfilePhoto } from '../middleware/upload.js';
+
 const router = express.Router();
-const AuthController = require('../controllers/authController');
-const { authenticateToken, rateLimiter } = require('../middleware/auth');
-const { authValidation } = require('../middleware/validation');
-const { asyncHandler } = require('../middleware/errorHandler');
-const { uploadProfilePhoto, optionalUploadProfilePhoto } = require('../middleware/upload');
 
 // Rate limiting for auth endpoints - Relaxed for development/testing
 const authRateLimit = rateLimiter(1000, 15 * 60 * 1000); // 1000 requests per 15 minutes
@@ -68,4 +69,4 @@ router.get('/verify',
   asyncHandler(AuthController.verifyToken)
 );
 
-module.exports = router;
+export default router;

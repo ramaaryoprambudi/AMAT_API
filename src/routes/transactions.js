@@ -1,9 +1,10 @@
-const express = require('express');
+import express from 'express';
+import TransactionController from '../controllers/transactionController.js';
+import { transactionValidation } from '../middleware/validation.js';
+import { asyncHandler } from '../middleware/errorHandler.js';
+import { authenticateToken, checkResourceOwnership } from '../middleware/auth.js';
+
 const router = express.Router();
-const TransactionController = require('../controllers/transactionController');
-const { transactionValidation } = require('../middleware/validation');
-const { asyncHandler } = require('../middleware/errorHandler');
-const { authenticateToken, checkResourceOwnership } = require('../middleware/auth');
 
 // All transaction routes require authentication
 router.use(authenticateToken);
@@ -54,4 +55,4 @@ router.delete('/:id',
   asyncHandler(TransactionController.deleteTransaction)
 );
 
-module.exports = router;
+export default router;

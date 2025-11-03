@@ -1,11 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const db = require('./config/db');
-const routes = require('./routes');
-const { errorHandler, notFound } = require('./middleware/errorHandler');
-const { directoryProtection, handleUploadsRoot, logFileAccess } = require('./middleware/directoryProtection');
+import { config } from 'dotenv';
+config();
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import db from './config/db.js';
+import routes from './routes/index.js';
+import { errorHandler, notFound } from './middleware/errorHandler.js';
+import { directoryProtection, handleUploadsRoot, logFileAccess } from './middleware/directoryProtection.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -134,4 +135,4 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 // Start the server
 startServer();
 
-module.exports = app;
+export default app;
