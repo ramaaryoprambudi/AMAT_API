@@ -11,12 +11,13 @@ const dbConfig = {
   port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
   user: process.env.DB_USER || "avnadmin",
   password: process.env.DB_PASSWORD || "AVNS_srshgCgm00D1lDvmGOb",
-  database: process.env.DB_NAME || "defaultdb",
+  database: process.env.DB_NAME || "personal_finance",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 };
 
 export default dbConfig;
+
 
 
