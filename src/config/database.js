@@ -6,7 +6,9 @@ config();
 const dbConfig = {
   // Untuk Cloud SQL di Cloud Run, uncomment socketPath dan comment host/port
   //socketPath: "/cloudsql/bara-f786e:asia-southeast2:kings-sql",
-
+  
+  host: process.env.DB_HOST, // ⬅ WAJIB di-set, jangan dibiarkan kosong
+  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
   user: process.env.DB_USER || "avnadmin",
   password: process.env.DB_PASSWORD || "AVNS_srshgCgm00D1lDvmGOb",
   database: process.env.DB_NAME || "defaultdb",
@@ -16,4 +18,5 @@ const dbConfig = {
 };
 
 export default dbConfig;
+
 
