@@ -5,14 +5,15 @@ config();
 // Ganti nilai hardcoded di bawah untuk production Cloud SQL
 const dbConfig = {
   // Untuk Cloud SQL di Cloud Run, uncomment socketPath dan comment host/port
-  socketPath: "/cloudsql/bara-f786e:asia-southeast2:kings-sql",
+  //socketPath: "/cloudsql/bara-f786e:asia-southeast2:kings-sql",
 
-  user: process.env.DB_USER || "root",
-  password: process.env.DB_PASSWORD || "Kings123!",
-  database: process.env.DB_NAME || "personal_finance",
+  user: process.env.DB_USER || "avnadmin",
+  password: process.env.DB_PASSWORD || "AVNS_srshgCgm00D1lDvmGOb",
+  database: process.env.DB_NAME || "defaultdb",
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 };
 
 export default dbConfig;
+
