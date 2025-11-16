@@ -12,12 +12,18 @@ const dbConfig = {
   user: process.env.DB_USER || "avnadmin",
   password: process.env.DB_PASSWORD || "AVNS_srshgCgm00D1lDvmGOb",
   database: process.env.DB_NAME || "personal_finance",
+  ssl: {
+    // Untuk demo / tugas boleh false dulu, supaya gak perlu CA file.
+    // Nanti kalau mau lebih aman baru pakai CA cert Aiven.
+    rejectUnauthorized: false,
+  },
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
 };
 
 export default dbConfig;
+
 
 
 
