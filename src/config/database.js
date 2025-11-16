@@ -8,7 +8,7 @@ const dbConfig = {
   //socketPath: "/cloudsql/bara-f786e:asia-southeast2:kings-sql",
   
   host: process.env.DB_HOST, // ⬅ WAJIB di-set, jangan dibiarkan kosong
-  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER || "avnadmin",
   password: process.env.DB_PASSWORD || "AVNS_srshgCgm00D1lDvmGOb",
   database: process.env.DB_NAME || "personal_finance",
@@ -18,6 +18,7 @@ const dbConfig = {
 };
 
 export default dbConfig;
+
 
 
 
