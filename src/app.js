@@ -3,10 +3,17 @@ config();
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import db from './config/db.js';
 import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { directoryProtection, handleUploadsRoot, logFileAccess } from './middleware/directoryProtection.js';
+import { ensureUploadDirectoryExists } from './middleware/upload.js';
+
+// Get current directory in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -29,8 +36,9 @@ app.use(handleUploadsRoot);
 app.use(logFileAccess);
 app.use(directoryProtection);
 
-// Serve static files (uploaded photos)
-app.use('/uploads', express.static('uploads'));
+// Serve static files (uploaded photos) - using absolute path
+const uploadsPath = path.join(__dirname, '..', 'uploads');
+app.use('/uploads', express.static(uploadsPath));
 
 // Request logging middleware (production ready)
 app.use((req, res, next) => {
@@ -64,6 +72,9 @@ app.use(errorHandler);
 // Start server
 const startServer = async () => {
   try {
+    // Ensure upload directories exist
+    ensureUploadDirectoryExists();
+    
     // Start HTTP server first (required for Cloud Run)
     const server = app.listen(PORT, '0.0.0.0', async () => {
       if (process.env.NODE_ENV !== 'production') {
