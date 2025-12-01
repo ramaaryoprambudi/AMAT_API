@@ -5,7 +5,7 @@ import fs from 'fs';
 // Konfigurasi storage untuk multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = 'uploads/profile-photos';
+    const uploadDir = '/uploads/profile-photos';
     
     // Buat folder jika belum ada
     if (!fs.existsSync(uploadDir)) {
@@ -162,4 +162,5 @@ export {
   optionalUploadProfilePhoto,
   deleteOldProfilePhoto,
   validateImageDimensions
+
 };
