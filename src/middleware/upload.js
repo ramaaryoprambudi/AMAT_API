@@ -1,18 +1,43 @@
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+// Get current directory in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Initialize upload directory on module load
+(() => {
+  const projectRoot = path.join(__dirname, '..', '..');
+  const uploadDir = path.join(projectRoot, 'uploads', 'profile-photos');
+  
+  try {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+  } catch (error) {
+    console.error('Error initializing upload directory:', error);
+  }
+})();
 
 // Konfigurasi storage untuk multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = '/uploads/profile-photos';
+    // Use absolute path from project root
+    const projectRoot = path.join(__dirname, '..', '..');
+    const uploadDir = path.join(projectRoot, 'uploads', 'profile-photos');
     
     // Buat folder jika belum ada
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    try {
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      cb(null, uploadDir);
+    } catch (error) {
+      console.error('Error creating upload directory:', error);
+      cb(error, null);
     }
-    
-    cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
     // Generate unique filename
@@ -136,12 +161,32 @@ const optionalUploadProfilePhoto = (req, res, next) => {
   });
 };
 
+// Fungsi untuk memastikan direktori upload ada
+const ensureUploadDirectoryExists = () => {
+  const projectRoot = path.join(__dirname, '..', '..');
+  const uploadDir = path.join(projectRoot, 'uploads', 'profile-photos');
+  
+  try {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+      console.log('✅ Upload directory created:', uploadDir);
+    }
+  } catch (error) {
+    console.error('❌ Error creating upload directory:', error);
+  }
+};
+
 // Fungsi untuk menghapus file lama
 const deleteOldProfilePhoto = (filename) => {
   if (filename) {
-    const filePath = path.join('uploads/profile-photos', filename);
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    const projectRoot = path.join(__dirname, '..', '..');
+    const filePath = path.join(projectRoot, 'uploads', 'profile-photos', filename);
+    try {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    } catch (error) {
+      console.error('Error deleting old profile photo:', error);
     }
   }
 };
@@ -161,6 +206,6 @@ export {
   uploadProfilePhoto,
   optionalUploadProfilePhoto,
   deleteOldProfilePhoto,
-  validateImageDimensions
-
+  validateImageDimensions,
+  ensureUploadDirectoryExists
 };
